@@ -2,6 +2,7 @@ import pygame
 from artificial_intelligence import EnemyBot
 from backend import (load_image, Colony)
 
+
 def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
     # если файл не существует, то выходим
