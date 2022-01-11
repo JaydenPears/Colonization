@@ -1,4 +1,5 @@
 import pygame
+import os
 from artificial_intelligence import EnemyBot
 from backend import (load_image, Colony)
 
