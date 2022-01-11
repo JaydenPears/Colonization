@@ -15,17 +15,17 @@ def load_image(name, colorkey=None):
     return image
 
 
+class Colony(pygame.sprite.Sprite):
+    def __init__(self, name_image):
+        self.name_image = name_image
+
+
 class Button:
     def __init__(self, x, y, width, height):
         self.x, self.y = x, y
         self.width, self.height = width, height
 
     def draw_button(self, color_for_button):
-        pass
-
-
-class ColonyAction:
-    def __init__(self):
         pass
 
 
