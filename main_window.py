@@ -13,14 +13,14 @@ class MainWindow:
         self.states = {'starter menu': self.render_starter_menu}
         self.array_buttons = []
 
-        self.starter_image = pygame.image.load("start_image.jpg").convert()
-
         self.InitUI()
 
     def InitUI(self):
         pygame.init()
         pygame.display.set_caption('Колонизация')
         self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
+
+        self.starter_image = pygame.image.load("start_image.png").convert()
         
         running = True
 
