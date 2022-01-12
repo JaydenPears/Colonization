@@ -10,8 +10,7 @@ class MainWindow:
         self.starter_position = (0, 0)
         self.size = size
 
-        self.states = {'starter menu': self.render_starter_menu}
-        self.array_buttons = []
+        self.states = {'starter menu': self.starter_menu}
 
         self.InitUI()
 
@@ -20,8 +19,8 @@ class MainWindow:
         pygame.display.set_caption('Колонизация')
         self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
 
-        self.starter_image = pygame.image.load("start_image.png").convert()
-        cursor_image = pygame.image.load("cursor.png")
+        self.starter_image = pygame.image.load("images/start_image.png").convert()
+        cursor_image = pygame.image.load("images/cursor.png")
 
         pygame.mouse.set_visible(False)
         
@@ -43,14 +42,14 @@ class MainWindow:
             pygame.display.flip()
         pygame.quit()
 
-    def render_starter_menu(self):
+    def starter_menu(self):
         self.screen.blit(self.starter_image, self.starter_position)
-
-    def render_create_account_menu(self):
-        pass
-
-    def render_enter_account(self):
-        pass
+        size_create_account = (200, 50)
+        positions = (self.size[0] // 2 - size_create_account[0],
+                     self.size[1] // 2 - size_create_account[1])
+        button_create_account = Button(positions, size_create_account,
+                                       (1, 1, 1), 'Trebuchet MS', 'Зарегистрироваться',
+                                       self.screen)
 
     def render_game_lvl_first(self):
         pass
@@ -63,12 +62,18 @@ class MainWindow:
 
 
 class Button:
-    def __init__(self, x, y, width, height, color_for_button):
-        self.x, self.y = x, y
-        self.width, self.height = width, height
+    def __init__(self, pos, size, color_for_button, font, text, screen):
+        self.x, self.y = pos
+        self.width, self.height = size
         self.color_for_draw = color_for_button
+        self.screen = screen
+        self.font = font
+        self.text = text
 
     def draw_button(self):
+        pass
+
+    def draw_active_button(self):
         pass
 
     def hide_button(self):
