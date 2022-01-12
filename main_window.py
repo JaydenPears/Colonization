@@ -1,15 +1,20 @@
 import pygame
 import os
 import sys
-from artificial_intelligence import EnemyBot
-from backend import ActionWithColony
+from artificial_intelligence import GameBot
+from backend import (PlayersColony, PeacefulColony, EnemyColony)
 
 
 class MainWindow:
     def __init__(self, size):
-        self.fps = 60
+        self.starter_position = (0, 0)
         self.size = size
-        self.states = {''}
+
+        self.states = {'starter menu': self.render_starter_menu}
+        self.array_buttons = []
+
+        self.starter_image = pygame.image.load("start_image.jpg").convert()
+
         self.InitUI()
 
     def InitUI(self):
@@ -22,24 +27,19 @@ class MainWindow:
         clock = pygame.time.Clock()
         global_time = 0
 
-        check_starter_menu = True
-        self.array_buttons = []
-
         self.check_state = 'starter menu'
 
         while running:
-            self.screen.fill((0, 0, 0))
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-            if check_starter_menu:
-                pass
+            self.states[self.check_state]()
             global_time += clock.tick()
             pygame.display.flip()
         pygame.quit()
 
     def render_starter_menu(self):
-        pass
+        self.screen.blit(self.starter_image, self.starter_position)
 
     def render_create_account_menu(self):
         pass
