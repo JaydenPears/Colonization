@@ -21,6 +21,9 @@ class MainWindow:
         self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
 
         self.starter_image = pygame.image.load("start_image.png").convert()
+        cursor_image = pygame.image.load("cursor.png")
+
+        pygame.mouse.set_visible(False)
         
         running = True
 
@@ -30,10 +33,12 @@ class MainWindow:
         self.check_state = 'starter menu'
 
         while running:
+            self.states[self.check_state]()
+            mouse_pos = pygame.mouse.get_pos()
+            self.screen.blit(cursor_image, mouse_pos)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-            self.states[self.check_state]()
             global_time += clock.tick()
             pygame.display.flip()
         pygame.quit()
