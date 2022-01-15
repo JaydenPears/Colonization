@@ -13,7 +13,13 @@ class MainWindow:
         self.starter_position = (0, 0)
         self.size = size
 
-        self.states = {'starter menu': self.starter_menu}
+        self.states = {'starter menu': self.render_starter_menu,
+                       'new game': self.render_game_lvl_first,
+                       'download game': self.render_menu_download_game,
+                       'settings': self.render_settings_menu}
+        self.game_lvls = {'1 lvl': self.render_game_lvl_first,
+                          '2 lvl': self.render_game_lvl_second,
+                          '3 lvl': self.render_game_lvl_third}
 
         self.InitUI()
 
@@ -53,7 +59,7 @@ class MainWindow:
                                    self.size[1] // 2 - (self.size_new_game[1] // 2) - 75)
         self.new_game = Button(self.positions_new_game, (915, 455),
                                self.size_new_game,
-                              (179, 179, 179), (0, 0, 0), 'Trebuchet MS',
+                               (179, 179, 179), (0, 0, 0), 'Trebuchet MS',
                                'Новая игра', self.screen)
 
         self.size_download_game = (200, 50)
@@ -61,22 +67,33 @@ class MainWindow:
                                         self.size[1] // 2 - (self.size_download_game[1] // 2) - 15)
         self.download_game = Button(self.positions_download_game, (895, 515),
                                     self.size_download_game,
-                                   (179, 179, 179), (0, 0, 0), 'Trebuchet MS',
+                                    (179, 179, 179), (0, 0, 0), 'Trebuchet MS',
                                     'Загрузить игру', self.screen)
+
+        self.size_settings = (200, 50)
+        self.positions_settings = (self.size[0] // 2 - (self.size_settings[0] // 2),
+                                   self.size[1] // 2 - (self.size_settings[1] // 2) + 45)
+        self.settings_button = Button(self.positions_settings, (915, 575),
+                                      self.size_settings,
+                                      (179, 179, 179), (0, 0, 0), 'Trebuchet MS',
+                                      'Настройки', self.screen)
 
         self.size_exit = (200, 50)
         self.positions_exit = (self.size[0] // 2 - (self.size_exit[0] // 2),
-                               self.size[1] // 2 - (self.size_exit[1] // 2) + 45)
-        self.exit_button = Button(self.positions_exit, (935, 575),
+                               self.size[1] // 2 - (self.size_exit[1] // 2) + 105)
+        self.exit_button = Button(self.positions_exit, (935, 635),
                                   self.size_exit,
-                                 (179, 179, 179), (0, 0, 0), 'Trebuchet MS',
+                                  (179, 179, 179), (0, 0, 0), 'Trebuchet MS',
                                   'Выйти', self.screen)
 
-    def starter_menu(self):
+    def render_starter_menu(self):
         self.screen.blit(self.starter_image, self.starter_position)
+
         self.new_game.draw_button()
         self.download_game.draw_button()
         self.exit_button.draw_button()
+        self.settings_button.draw_button()
+        
         mouse_position = pygame.mouse.get_pos()
         is_clicked_mouse = pygame.mouse.get_pressed()
 
@@ -87,7 +104,7 @@ class MainWindow:
         mouse_position[1] <= self.size_new_game[1] + self.positions_new_game[1]):
             self.new_game.draw_active_button()
             if is_clicked_mouse[0] is True:
-                self.render_menu_new_game()
+                self.check_state = 'new game'
 
         # Длинная проверка нахождения мышки на кнопке "загрузить игру"
         if (mouse_position[0] >= self.positions_download_game[0] and\
@@ -96,7 +113,16 @@ class MainWindow:
         mouse_position[1] <= self.size_download_game[1] + self.positions_download_game[1]):
             self.download_game.draw_active_button()
             if is_clicked_mouse[0] is True:
-                self.render_menu_download_game()
+                self.check_state = 'download game'
+
+        # Длинная проверка нахождения мышки на кнопке "настройки"
+        if (mouse_position[0] >= self.positions_settings[0] and\
+        mouse_position[0] <= self.size_settings[0] + self.positions_settings[0]) and\
+        (mouse_position[1] >= self.positions_settings[1] and\
+        mouse_position[1] <= self.size_settings[1] + self.positions_settings[1]):
+            self.settings_button.draw_active_button()
+            if is_clicked_mouse[0] is True:
+                self.check_state = 'settings'
 
         # Длинная проверка нахождения мышки на кнопке "выход"
         if (mouse_position[0] >= self.positions_exit[0] and\
@@ -107,11 +133,11 @@ class MainWindow:
             if is_clicked_mouse[0] is True:
                 self.running = False
 
-    def render_menu_new_game(self):
-        pass
-
     def render_menu_download_game(self):
-        pass
+        self.screen.blit(self.starter_image, self.starter_position)
+    
+    def render_settings_menu(self):
+        self.render_starter_menu()
 
     def render_game_lvl_first(self):
         pass
@@ -151,6 +177,11 @@ class Button:
         pygame.draw.rect(self.screen, COLOR_ACTIVE_BUTTON,
                         (self.x, self.y, self.width, self.height))
         self.print_text_on_button()
+
+
+class InputText:
+    def __init__(self):
+        pass
 
 
 if __name__ == '__main__':
