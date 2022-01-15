@@ -2,7 +2,7 @@ import pygame
 import os
 import sys
 from artificial_intelligence import GameBot
-from backend import (PlayersColony, PeacefulColony, EnemyColony)
+from backend import (PlayersColony, PeacefulColony, EnemyColony, ActionWithTable)
 
 
 COLOR_ACTIVE_BUTTON = (231, 238, 255)
