@@ -59,7 +59,7 @@ class MainWindow:
         self.size_download_game = (200, 50)
         self.positions_download_game = (self.size[0] // 2 - (self.size_download_game[0] // 2),
                                         self.size[1] // 2 - (self.size_download_game[1] // 2) - 15)
-        self.download_game = Button(self.positions_download_game, (900, 515),
+        self.download_game = Button(self.positions_download_game, (895, 515),
                                     self.size_download_game,
                                    (179, 179, 179), (0, 0, 0), 'Trebuchet MS',
                                     'Загрузить игру', self.screen)
