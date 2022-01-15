@@ -27,7 +27,7 @@ class MainWindow:
 
         pygame.mouse.set_visible(False)
         
-        running = True
+        self.running = True
 
         clock = pygame.time.Clock()
         global_time = 0
@@ -36,13 +36,13 @@ class MainWindow:
 
         self.initialization_buttons()
 
-        while running:
+        while self.running:
             self.states[self.check_state]()
             mouse_pos = pygame.mouse.get_pos()
             self.screen.blit(cursor_image, mouse_pos)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
+                    self.running = False
             global_time += clock.tick()
             pygame.display.flip()
         pygame.quit()
@@ -51,20 +51,67 @@ class MainWindow:
         self.size_new_game = (200, 50)
         self.positions_new_game = (self.size[0] // 2 - (self.size_new_game[0] // 2),
                                    self.size[1] // 2 - (self.size_new_game[1] // 2) - 75)
-        self.new_game = Button(self.positions_new_game, self.size_new_game,
+        self.new_game = Button(self.positions_new_game, (915, 455),
+                               self.size_new_game,
                               (179, 179, 179), (0, 0, 0), 'Trebuchet MS',
                                'Новая игра', self.screen)
+
+        self.size_download_game = (200, 50)
+        self.positions_download_game = (self.size[0] // 2 - (self.size_download_game[0] // 2),
+                                        self.size[1] // 2 - (self.size_download_game[1] // 2) - 15)
+        self.download_game = Button(self.positions_download_game, (900, 515),
+                                    self.size_download_game,
+                                   (179, 179, 179), (0, 0, 0), 'Trebuchet MS',
+                                    'Загрузить игру', self.screen)
+
+        self.size_exit = (200, 50)
+        self.positions_exit = (self.size[0] // 2 - (self.size_exit[0] // 2),
+                               self.size[1] // 2 - (self.size_exit[1] // 2) + 45)
+        self.exit_button = Button(self.positions_exit, (935, 575),
+                                  self.size_exit,
+                                 (179, 179, 179), (0, 0, 0), 'Trebuchet MS',
+                                  'Выйти', self.screen)
 
     def starter_menu(self):
         self.screen.blit(self.starter_image, self.starter_position)
         self.new_game.draw_button()
+        self.download_game.draw_button()
+        self.exit_button.draw_button()
         mouse_position = pygame.mouse.get_pos()
         is_clicked_mouse = pygame.mouse.get_pressed()
+
+        # Длинная проверка нахождения мышки на кнопке "новая игра"
         if (mouse_position[0] >= self.positions_new_game[0] and\
         mouse_position[0] <= self.size_new_game[0] + self.positions_new_game[0]) and\
         (mouse_position[1] >= self.positions_new_game[1] and\
         mouse_position[1] <= self.size_new_game[1] + self.positions_new_game[1]):
             self.new_game.draw_active_button()
+            if is_clicked_mouse[0] is True:
+                self.render_menu_new_game()
+
+        # Длинная проверка нахождения мышки на кнопке "загрузить игру"
+        if (mouse_position[0] >= self.positions_download_game[0] and\
+        mouse_position[0] <= self.size_download_game[0] + self.positions_download_game[0]) and\
+        (mouse_position[1] >= self.positions_download_game[1] and\
+        mouse_position[1] <= self.size_download_game[1] + self.positions_download_game[1]):
+            self.download_game.draw_active_button()
+            if is_clicked_mouse[0] is True:
+                self.render_menu_download_game()
+
+        # Длинная проверка нахождения мышки на кнопке "выход"
+        if (mouse_position[0] >= self.positions_exit[0] and\
+        mouse_position[0] <= self.size_exit[0] + self.positions_exit[0]) and\
+        (mouse_position[1] >= self.positions_exit[1] and\
+        mouse_position[1] <= self.size_exit[1] + self.positions_exit[1]):
+            self.exit_button.draw_active_button()
+            if is_clicked_mouse[0] is True:
+                self.running = False
+
+    def render_menu_new_game(self):
+        pass
+
+    def render_menu_download_game(self):
+        pass
 
     def render_game_lvl_first(self):
         pass
@@ -77,10 +124,10 @@ class MainWindow:
 
 
 class Button:
-    def __init__(self, pos, size, color_for_button, color_for_text, font, text, screen):
+    def __init__(self, pos, text_pos, size, color_for_button, color_for_text, font, text, screen):
         self.x, self.y = pos
-        self.pos_for_text = (self.x + 52.5, self.y + 12)
         self.width, self.height = size
+        self.pos_for_text = text_pos
 
         self.color_for_draw = color_for_button
         self.color_for_text = color_for_text
