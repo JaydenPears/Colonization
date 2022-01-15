@@ -1,13 +1,13 @@
-class PlayersColony:
-    def __init__(self):
-        pass
-
-
 class PeacefulColony:
     def __init__(self):
         pass
 
 
-class EnemyColony:
+class PlayersColony(PeacefulColony):
+    def __init__(self):
+        pass
+
+
+class EnemyColony(PeacefulColony):
     def __init__(self):
         pass
