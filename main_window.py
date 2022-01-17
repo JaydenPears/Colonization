@@ -13,10 +13,15 @@ class MainWindow:
         self.starter_position = (0, 0)
         self.size = size
 
+        self.font = 'Trebuchet MS'
+        self.color_for_text = (0, 0, 0)
+
         self.states = {'starter menu': self.render_starter_menu,
                        'new game': self.render_game_lvl_first,
                        'download game': self.render_menu_download_game,
-                       'settings': self.render_settings_menu}
+                       'settings': self.render_settings_menu,
+                       'rules': self.render_rules}
+
         self.game_lvls = {'1 lvl': self.render_game_lvl_first,
                           '2 lvl': self.render_game_lvl_second,
                           '3 lvl': self.render_game_lvl_third}
@@ -65,7 +70,7 @@ class MainWindow:
                                    self.size[1] // 2 - (self.size_new_game[1] // 2) - 75)
         self.new_game = Button(self.positions_new_game, (915, 455),
                                self.size_new_game,
-                               (179, 179, 179), (0, 0, 0), 'Trebuchet MS',
+                               (179, 179, 179), self.color_for_text, self.font,
                                'Новая игра', self.screen)
 
         self.size_download_game = (200, 50)
@@ -73,7 +78,7 @@ class MainWindow:
                                         self.size[1] // 2 - (self.size_download_game[1] // 2) - 15)
         self.download_game = Button(self.positions_download_game, (895, 515),
                                     self.size_download_game,
-                                    (179, 179, 179), (0, 0, 0), 'Trebuchet MS',
+                                    (179, 179, 179), self.color_for_text, self.font,
                                     'Загрузить игру', self.screen)
 
         self.size_settings = (200, 50)
@@ -81,7 +86,7 @@ class MainWindow:
                                    self.size[1] // 2 - (self.size_settings[1] // 2) + 45)
         self.settings_button = Button(self.positions_settings, (915, 575),
                                       self.size_settings,
-                                      (179, 179, 179), (0, 0, 0), 'Trebuchet MS',
+                                      (179, 179, 179), self.color_for_text, self.font,
                                       'Настройки', self.screen)
 
         self.size_exit = (200, 50)
@@ -89,7 +94,7 @@ class MainWindow:
                                self.size[1] // 2 - (self.size_exit[1] // 2) + 105)
         self.exit_button = Button(self.positions_exit, (935, 635),
                                   self.size_exit,
-                                  (179, 179, 179), (0, 0, 0), 'Trebuchet MS',
+                                  (179, 179, 179), self.color_for_text, self.font,
                                   'Выйти', self.screen)
 
     def render_starter_menu(self):
@@ -153,11 +158,43 @@ class MainWindow:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.check_state = 'starter menu'
 
+        self.check_state = 'rules'
+
     def render_game_lvl_second(self):
-        pass
+        self.screen.blit(self.starter_image, self.starter_position)
+
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                self.check_state = 'download game'
 
     def render_game_lvl_third(self):
-        pass
+        self.screen.blit(self.starter_image, self.starter_position)
+
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                self.check_state = 'download game'
+
+    def render_rules(self):
+        color_for_draw = (175, 175, 175)
+        x, y = (5, 5)
+        width, height = (500, 500)
+
+        self.screen.blit(self.starter_image, self.starter_position)
+        pygame.draw.rect(self.screen, color_for_draw,
+                        (x, y, width, height))
+
+        pos_for_text = [10, 0]
+        size_text = 30
+        text = 'A\nB\nC\nD\nE\nF\nG\nH\nI\nJ'.split()
+
+        for i in range(10):
+            self.screen.blit(pygame.font.SysFont(self.font, size_text, bold=True).render(text[i], True,
+                         self.color_for_text), tuple(pos_for_text))
+            pos_for_text[1] += 30
+
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                self.check_state = 'starter menu'
 
 
 class Button:
@@ -188,11 +225,6 @@ class Button:
         pygame.draw.rect(self.screen, COLOR_ACTIVE_BUTTON,
                         (self.x, self.y, self.width, self.height))
         self.print_text_on_button()
-
-
-class InputText:
-    def __init__(self):
-        pass
 
 
 if __name__ == '__main__':
