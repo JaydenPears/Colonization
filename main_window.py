@@ -53,6 +53,12 @@ class MainWindow:
             pygame.display.flip()
         pygame.quit()
 
+    def check_pos_on_button(self, mouse_pos, button_xy, button_size):
+        if (mouse_pos[0] >= button_xy[0] and mouse_pos[0] <= button_size[0] + button_xy[0])\
+        and (mouse_pos[1] >= button_xy[1] and mouse_pos[1] <= button_size[1] + button_xy[1]):
+            return True
+        return False
+
     def initialization_buttons(self):
         self.size_new_game = (200, 50)
         self.positions_new_game = (self.size[0] // 2 - (self.size_new_game[0] // 2),
@@ -97,50 +103,55 @@ class MainWindow:
         mouse_position = pygame.mouse.get_pos()
         is_clicked_mouse = pygame.mouse.get_pressed()
 
-        # Длинная проверка нахождения мышки на кнопке "новая игра"
-        if (mouse_position[0] >= self.positions_new_game[0] and\
-        mouse_position[0] <= self.size_new_game[0] + self.positions_new_game[0]) and\
-        (mouse_position[1] >= self.positions_new_game[1] and\
-        mouse_position[1] <= self.size_new_game[1] + self.positions_new_game[1]):
+        if self.check_pos_on_button(mouse_position, self.positions_new_game,
+                                    self.size_new_game):
             self.new_game.draw_active_button()
             if is_clicked_mouse[0] is True:
+                pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
                 self.check_state = 'new game'
 
-        # Длинная проверка нахождения мышки на кнопке "загрузить игру"
-        if (mouse_position[0] >= self.positions_download_game[0] and\
-        mouse_position[0] <= self.size_download_game[0] + self.positions_download_game[0]) and\
-        (mouse_position[1] >= self.positions_download_game[1] and\
-        mouse_position[1] <= self.size_download_game[1] + self.positions_download_game[1]):
+        if self.check_pos_on_button(mouse_position, self.positions_download_game,
+                                    self.size_download_game):
             self.download_game.draw_active_button()
             if is_clicked_mouse[0] is True:
+                pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
                 self.check_state = 'download game'
 
-        # Длинная проверка нахождения мышки на кнопке "настройки"
-        if (mouse_position[0] >= self.positions_settings[0] and\
-        mouse_position[0] <= self.size_settings[0] + self.positions_settings[0]) and\
-        (mouse_position[1] >= self.positions_settings[1] and\
-        mouse_position[1] <= self.size_settings[1] + self.positions_settings[1]):
+        if self.check_pos_on_button(mouse_position, self.positions_settings,
+                                    self.size_settings):
             self.settings_button.draw_active_button()
             if is_clicked_mouse[0] is True:
+                pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
                 self.check_state = 'settings'
 
-        # Длинная проверка нахождения мышки на кнопке "выход"
-        if (mouse_position[0] >= self.positions_exit[0] and\
-        mouse_position[0] <= self.size_exit[0] + self.positions_exit[0]) and\
-        (mouse_position[1] >= self.positions_exit[1] and\
-        mouse_position[1] <= self.size_exit[1] + self.positions_exit[1]):
+        if self.check_pos_on_button(mouse_position, self.positions_exit,
+                                    self.size_exit):
             self.exit_button.draw_active_button()
             if is_clicked_mouse[0] is True:
+                pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
+                pygame.time.delay(275)
                 self.running = False
 
     def render_menu_download_game(self):
         self.screen.blit(self.starter_image, self.starter_position)
+
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                self.check_state = 'starter menu'
     
     def render_settings_menu(self):
-        self.render_starter_menu()
+        self.screen.blit(self.starter_image, self.starter_position)
+
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                self.check_state = 'starter menu'
 
     def render_game_lvl_first(self):
-        pass
+        self.screen.blit(self.starter_image, self.starter_position)
+
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                self.check_state = 'starter menu'
 
     def render_game_lvl_second(self):
         pass
