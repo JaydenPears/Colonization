@@ -199,9 +199,9 @@ class MainWindow:
 
         pos_for_text = [55, 45]
         size_text = 30
-        text = 'A\nB\nC\nD\nE\nF\nG\nH\nI\nJ'.split()
+        text = 'Правила:\n\nВ разработке...'.split('\n')
 
-        for i in range(10):
+        for i in range(3):
             self.screen.blit(pygame.font.SysFont(self.font, size_text, bold=True).render(text[i], True,
                          self.color_for_text), tuple(pos_for_text))
             pos_for_text[1] += 30
