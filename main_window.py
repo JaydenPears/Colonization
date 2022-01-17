@@ -141,21 +141,27 @@ class MainWindow:
         self.screen.blit(self.starter_image, self.starter_position)
 
         for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            if event.type == pygame.QUIT:
+                    self.running = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.check_state = 'starter menu'
     
     def render_settings_menu(self):
         self.screen.blit(self.starter_image, self.starter_position)
 
         for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            if event.type == pygame.QUIT:
+                    self.running = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.check_state = 'starter menu'
 
     def render_game_lvl_first(self):
         self.screen.blit(self.starter_image, self.starter_position)
 
         for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            if event.type == pygame.QUIT:
+                    self.running = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.check_state = 'starter menu'
 
         self.check_state = 'rules'
@@ -164,26 +170,34 @@ class MainWindow:
         self.screen.blit(self.starter_image, self.starter_position)
 
         for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            if event.type == pygame.QUIT:
+                    self.running = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.check_state = 'download game'
 
     def render_game_lvl_third(self):
         self.screen.blit(self.starter_image, self.starter_position)
 
         for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            if event.type == pygame.QUIT:
+                    self.running = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.check_state = 'download game'
 
     def render_rules(self):
-        color_for_draw = (175, 175, 175)
-        x, y = (5, 5)
-        width, height = (500, 500)
+        color_for_draw = (231, 238, 255)
+        pos_for_rect = (50, 50)
+        size = (1820, 980)
+        alpha_level = 100
+
+        rect = pygame.Surface(size)
+        rect.set_alpha(alpha_level)
+        rect.fill(color_for_draw)
 
         self.screen.blit(self.starter_image, self.starter_position)
-        pygame.draw.rect(self.screen, color_for_draw,
-                        (x, y, width, height))
+        self.screen.blit(rect, pos_for_rect)
 
-        pos_for_text = [10, 0]
+        pos_for_text = [55, 45]
         size_text = 30
         text = 'A\nB\nC\nD\nE\nF\nG\nH\nI\nJ'.split()
 
@@ -193,7 +207,9 @@ class MainWindow:
             pos_for_text[1] += 30
 
         for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            if event.type == pygame.QUIT:
+                    self.running = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.check_state = 'starter menu'
 
 
