@@ -1,9 +1,6 @@
 import pygame
-import os
-import sys
 from artificial_intelligence import GameBot
 from backend import (PlayersColony, PeacefulColony, EnemyColony, ActionWithTable)
-
 
 COLOR_ACTIVE_BUTTON = (231, 238, 255)
 
@@ -17,10 +14,9 @@ class MainWindow:
         self.color_for_text = (0, 0, 0)
 
         self.states = {'starter menu': self.render_starter_menu,
-                       'new game': self.render_game_lvl_first,
+                       'new game': self.render_rules,
                        'download game': self.render_menu_download_game,
-                       'settings': self.render_settings_menu,
-                       'rules': self.render_rules}
+                       'settings': self.render_settings_menu}
 
         self.game_lvls = {'1 lvl': self.render_game_lvl_first,
                           '2 lvl': self.render_game_lvl_second,
@@ -37,13 +33,15 @@ class MainWindow:
         cursor_image = pygame.image.load("images/cursor.png")
 
         pygame.mouse.set_visible(False)
-        
+
         self.running = True
+
+        self.saves = ActionWithTable('saves.csv').get_dict()
 
         clock = pygame.time.Clock()
         global_time = 0
 
-        self.check_state = 'starter menu' # по умолчанию изначально вызываем старт. меню
+        self.check_state = 'starter menu'  # по умолчанию изначально вызываем старт. меню
 
         self.initialization_buttons()
 
@@ -59,8 +57,8 @@ class MainWindow:
         pygame.quit()
 
     def check_pos_on_button(self, mouse_pos, button_xy, button_size):
-        if (mouse_pos[0] >= button_xy[0] and mouse_pos[0] <= button_size[0] + button_xy[0])\
-        and (mouse_pos[1] >= button_xy[1] and mouse_pos[1] <= button_size[1] + button_xy[1]):
+        if (mouse_pos[0] >= button_xy[0] and mouse_pos[0] <= button_size[0] + button_xy[0]) \
+                and (mouse_pos[1] >= button_xy[1] and mouse_pos[1] <= button_size[1] + button_xy[1]):
             return True
         return False
 
@@ -104,7 +102,7 @@ class MainWindow:
         self.download_game.draw_button()
         self.exit_button.draw_button()
         self.settings_button.draw_button()
-        
+
         mouse_position = pygame.mouse.get_pos()
         is_clicked_mouse = pygame.mouse.get_pressed()
 
@@ -142,47 +140,18 @@ class MainWindow:
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                    self.running = False
+                self.running = False
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.check_state = 'starter menu'
-    
+
     def render_settings_menu(self):
         self.screen.blit(self.starter_image, self.starter_position)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                    self.running = False
+                self.running = False
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.check_state = 'starter menu'
-
-    def render_game_lvl_first(self):
-        self.screen.blit(self.starter_image, self.starter_position)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                    self.running = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                self.check_state = 'starter menu'
-
-        self.check_state = 'rules'
-
-    def render_game_lvl_second(self):
-        self.screen.blit(self.starter_image, self.starter_position)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                    self.running = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                self.check_state = 'download game'
-
-    def render_game_lvl_third(self):
-        self.screen.blit(self.starter_image, self.starter_position)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                    self.running = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                self.check_state = 'download game'
 
     def render_rules(self):
         color_for_draw = (231, 238, 255)
@@ -197,20 +166,61 @@ class MainWindow:
         self.screen.blit(self.starter_image, self.starter_position)
         self.screen.blit(rect, pos_for_rect)
 
-        pos_for_text = [55, 45]
-        size_text = 30
-        text = 'Правила:\n\nВ разработке...'.split('\n')
+        pos_for_text = [55, 50]
+        size_text = 29
+        text = ['Суть игры:', '', 'Уважаемый игрок, приветствуем Вас в игре "Колонизация"',
+                'В ходе игры Вам предстоит решать различного рода стратегические головоломки, совершая некоторые логические',
+                'умозаключения, чтобы победить соперников и ' +
+                'расширить свое превосходство над своими оппонентами.',
+                'Вы можете сражаться за территории (колонии), уничтожать злостных врагов ' +
+                'и защищать границы своих земель.',
+                'Требуется захватывать колонии, которые предстают ' +
+                'прямоугольниками некоторого размера на игровом поле.',
+                'В дальнейшем же, чтобы победить, требуется захвать все имеющиеся ' +
+                'на поле колонии.']
 
-        for i in range(3):
+        for i in range(len(text)):
             self.screen.blit(pygame.font.SysFont(self.font, size_text, bold=True).render(text[i], True,
-                         self.color_for_text), tuple(pos_for_text))
+                                                                                         self.color_for_text),
+                             tuple(pos_for_text))
             pos_for_text[1] += 30
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                    self.running = False
+                self.running = False
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.check_state = 'starter menu'
+
+    def render_game_lvl_first(self):
+        self.screen.blit(self.starter_image, self.starter_position)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                self.check_state = 'new game'
+
+    def render_game_lvl_second(self):
+        self.screen.blit(self.starter_image, self.starter_position)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                self.check_state = 'download game'
+
+    def render_game_lvl_third(self):
+        self.screen.blit(self.starter_image, self.starter_position)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                self.check_state = 'download game'
+
+    def render_endgame(self):
+        # Реализовать бег спрайтов в титрах с учётом коллайда и анимаций
+        pass
 
 
 class Button:
@@ -230,16 +240,17 @@ class Button:
 
     def print_text_on_button(self):
         self.screen.blit(pygame.font.SysFont(self.font, self.size_text, bold=True).render(self.text, True,
-                         self.color_for_text), self.pos_for_text)
+                                                                                          self.color_for_text),
+                         self.pos_for_text)
 
     def draw_button(self):
         pygame.draw.rect(self.screen, self.color_for_draw,
-                        (self.x, self.y, self.width, self.height))
+                         (self.x, self.y, self.width, self.height))
         self.print_text_on_button()
 
     def draw_active_button(self):
         pygame.draw.rect(self.screen, COLOR_ACTIVE_BUTTON,
-                        (self.x, self.y, self.width, self.height))
+                         (self.x, self.y, self.width, self.height))
         self.print_text_on_button()
 
 
