@@ -1,6 +1,7 @@
 import pygame
 from artificial_intelligence import GameBot
-from backend import (PlayersColony, PeacefulColony, EnemyColony, ActionWithTable)
+from backend import (PlayersColony, PeacefulColony, EnemyColony, ActionWithTable,
+                     get_right_and_left_pos)
 
 COLOR_ACTIVE_BUTTON = (231, 238, 255)
 
@@ -17,10 +18,6 @@ class MainWindow:
                        'new game': self.render_rules,
                        'download game': self.render_menu_download_game,
                        'settings': self.render_settings_menu}
-
-        self.game_lvls = {'1 lvl': self.render_game_lvl_first,
-                          '2 lvl': self.render_game_lvl_second,
-                          '3 lvl': self.render_game_lvl_third}
 
         self.InitUI()
 
@@ -138,6 +135,9 @@ class MainWindow:
     def render_menu_download_game(self):
         self.screen.blit(self.starter_image, self.starter_position)
 
+        board = DrawBoard(r'GameLevels\Board1.txt', self.screen)
+        board.draw()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -191,33 +191,6 @@ class MainWindow:
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.check_state = 'starter menu'
 
-    def render_game_lvl_first(self):
-        self.screen.blit(self.starter_image, self.starter_position)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                self.check_state = 'new game'
-
-    def render_game_lvl_second(self):
-        self.screen.blit(self.starter_image, self.starter_position)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                self.check_state = 'download game'
-
-    def render_game_lvl_third(self):
-        self.screen.blit(self.starter_image, self.starter_position)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                self.check_state = 'download game'
-
     def render_endgame(self):
         # Реализовать бег спрайтов в титрах с учётом коллайда и анимаций
         pass
@@ -252,6 +225,30 @@ class Button:
         pygame.draw.rect(self.screen, COLOR_ACTIVE_BUTTON,
                          (self.x, self.y, self.width, self.height))
         self.print_text_on_button()
+
+
+class DrawBoard:
+    def __init__(self, filename, screen):
+        self.filename = filename
+        self.screen = screen
+
+        self.nums_from_matrix = ActionWithTable(self.filename).get_nums_from_matrix()
+        self.matrix = ActionWithTable(self.filename).get_matrix()
+
+        self.color_rect = (0, 0, 0)
+
+    def draw(self):
+        for i in self.nums_from_matrix:
+            pos = get_right_and_left_pos(self.matrix, i)
+
+            x = 50 + pos[0][0] * 50
+            y = 50 + pos[0][1] * 50
+
+            width = (pos[1][0] - pos[0][0]) * 50
+            height = (pos[1][1] - pos[0][1]) * 50
+
+            pygame.draw.rect(self.screen, self.color_rect,
+                            (x, y, width, height))
 
 
 if __name__ == '__main__':

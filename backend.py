@@ -35,3 +35,42 @@ class ActionWithTable:
             writer.writerow('number_save', 'lvl')
             for key in dict:
                 writer.writerow([key, dict[key]])
+
+    def get_matrix(self):
+        matrix = []
+        with open(self.filename, 'rt', encoding="utf-8") as f:
+            read_data = f.readlines()
+        for i in read_data:
+            matrix.append(list(map(int, i.split())))
+        return matrix
+
+    def get_nums_from_matrix(self):
+        array = []
+        matrix = self.get_matrix()
+        for i in matrix:
+            for j in i:
+                array.append(j)
+        array = sorted(list(set(array)))
+        return array
+
+def get_right_and_left_pos(matrix, number):
+    first_pos = second_pos = None
+    flag = False
+    for i in range(len(matrix)):
+        if flag:
+            break
+        for j in range(len(matrix[i])):
+            if matrix[i][j] == number:
+                first_pos = [j, i]
+                flag = True
+                break
+    flag = False
+    for i in range(len(matrix) - 1, -1, -1):
+        if flag:
+            break
+        for j in range(len(matrix[i]) - 1, -1, -1):
+            if matrix[i][j] == number:
+                second_pos = [j, i]
+                flag = True
+                break
+    return [first_pos, second_pos]
