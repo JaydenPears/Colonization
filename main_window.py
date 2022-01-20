@@ -234,7 +234,7 @@ class MainWindow:
         mouse_position = pygame.mouse.get_pos()
         is_clicked_mouse = pygame.mouse.get_pressed()
 
-        board = DrawBoard(r'GameLevels\Board1.txt', self.screen)
+        board = DrawBoard(self.game_lvls[self.game_lvl], self.screen)
         board.draw()
         fields = board.get_array()
 
