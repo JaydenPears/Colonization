@@ -19,7 +19,8 @@ class MainWindow:
         self.states = {'starter menu': self.render_starter_menu,
                        'new game': self.render_rules,
                        'download game': self.render_menu_download_game,
-                       'settings': self.render_settings_menu}
+                       'settings': self.render_settings_menu,
+                       'game lvl': self.render_game_lvl}
 
         self.game_lvl = '1 lvl'
         self.game_lvls = {'1lvl': r'GameLevels\Board1.txt',
@@ -99,6 +100,14 @@ class MainWindow:
                                   (179, 179, 179), self.color_for_text, self.font,
                                   'Выйти', self.screen)
 
+        self.size_start_game = (200, 50)
+        self.positions_start_game = (self.size[0] // 2 - (self.size_start_game[0] // 2),
+                                     self.size[1] // 2 - (self.size_start_game[1] // 2) + 105)
+        self.start_game_button = Button(self.positions_start_game, (910, 635),
+                                        self.size_start_game,
+                                        (179, 179, 179), self.color_for_text, self.font,
+                                        'Начать игру', self.screen)
+
     def render_starter_menu(self):
         self.screen.blit(self.starter_image, self.starter_position)
 
@@ -151,6 +160,74 @@ class MainWindow:
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.check_state = 'starter menu'
 
+    def render_settings_menu(self):
+        self.screen.blit(self.starter_image, self.starter_position)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                self.check_state = 'starter menu'
+
+    def render_rules(self):
+        mouse_position = pygame.mouse.get_pos()
+        is_clicked_mouse = pygame.mouse.get_pressed()
+
+        color_for_draw = (231, 238, 255)
+        pos_for_rect = (50, 50)
+        size = (1820, 545)
+        alpha_level = 100
+
+        rect = pygame.Surface(size)
+        rect.set_alpha(alpha_level)
+        rect.fill(color_for_draw)
+
+        self.screen.blit(self.starter_image, self.starter_position)
+        self.screen.blit(rect, pos_for_rect)
+
+        self.start_game_button.draw_button()
+
+        if self.check_pos_on_button(mouse_position, self.positions_start_game,
+                                    self.size_start_game):
+            self.start_game_button.draw_active_button()
+            if is_clicked_mouse[0]:
+                pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
+                self.check_state = 'game lvl'
+                pygame.time.delay(100)
+
+        pos_for_text = [55, 50]
+        size_text = 29
+        text = ['Суть игры:', '', 'Уважаемый игрок, приветствуем Вас в игре "Колонизация"!',
+                'В ходе игры Вам предстоит решать различного рода стратегические головоломки, ' +
+                'совершая некоторые логические',
+                'умозаключения, чтобы победить соперников и ' +
+                'расширить свое превосходство над своими оппонентами.',
+                'Вы можете сражаться за территории (колонии), уничтожать злостных врагов ' +
+                'и защищать границы своих земель.',
+                'Требуется захватывать колонии, которые предстают ' +
+                'прямоугольниками некоторого размера на игровом поле.',
+                'В дальнейшем же, чтобы победить, требуется захвать все имеющиеся ' +
+                'на поле колонии.', '', 'Правила:', '',
+                'С помощью использования левой кнопки мышки ("ЛКМ"/"LMB"), Вам потребуется ' +
+                'совершать клики, используя войско той или', 'иной колонии, захватывая другие.',
+                'Колонии показываются Вам в виде прямоугольниками в рамках игрового поля.',
+                'Ваши колонии будут подсвечиваться автоматически синим цветом,' +
+                ' а вражеские колонии будут подсвечиваться красным',
+                'цветом.', 'Если готовы начать, жмите на кнопку снизу.',
+                'Удачной игры и хорошего времяпровождения!']
+
+        for i in range(len(text)):
+            self.screen.blit(pygame.font.SysFont(self.font, size_text, bold=True).render(text[i], True,
+                                                                                         self.color_for_text),
+                             tuple(pos_for_text))
+            pos_for_text[1] += 30
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                self.check_state = 'starter menu'
+
     def render_game_lvl(self):
         self.screen.blit(self.starter_image, self.starter_position)
 
@@ -169,57 +246,9 @@ class MainWindow:
 
         for field in fields:
             if self.check_pos_on_button(mouse_position, field[0:2], field[2::]):
-                board.draw_active(*field)
                 if is_clicked_mouse[0]:
                     pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
                     pygame.time.delay(100)
-
-    def render_settings_menu(self):
-        self.screen.blit(self.starter_image, self.starter_position)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                self.check_state = 'starter menu'
-
-    def render_rules(self):
-        color_for_draw = (231, 238, 255)
-        pos_for_rect = (50, 50)
-        size = (1820, 980)
-        alpha_level = 100
-
-        rect = pygame.Surface(size)
-        rect.set_alpha(alpha_level)
-        rect.fill(color_for_draw)
-
-        self.screen.blit(self.starter_image, self.starter_position)
-        self.screen.blit(rect, pos_for_rect)
-
-        pos_for_text = [55, 50]
-        size_text = 29
-        text = ['Суть игры:', '', 'Уважаемый игрок, приветствуем Вас в игре "Колонизация"',
-                'В ходе игры Вам предстоит решать различного рода стратегические головоломки, совершая некоторые логические',
-                'умозаключения, чтобы победить соперников и ' +
-                'расширить свое превосходство над своими оппонентами.',
-                'Вы можете сражаться за территории (колонии), уничтожать злостных врагов ' +
-                'и защищать границы своих земель.',
-                'Требуется захватывать колонии, которые предстают ' +
-                'прямоугольниками некоторого размера на игровом поле.',
-                'В дальнейшем же, чтобы победить, требуется захвать все имеющиеся ' +
-                'на поле колонии.']
-
-        for i in range(len(text)):
-            self.screen.blit(pygame.font.SysFont(self.font, size_text, bold=True).render(text[i], True,
-                                                                                         self.color_for_text),
-                             tuple(pos_for_text))
-            pos_for_text[1] += 30
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                self.check_state = 'starter menu'
 
     def render_endgame(self):
         # Реализовать бег спрайтов в титрах с учётом коллайда и анимаций
@@ -265,7 +294,7 @@ class DrawBoard:
         self.nums_from_matrix = ActionWithTable(self.filename).get_nums_from_matrix()
         self.matrix = ActionWithTable(self.filename).get_matrix()
 
-        self.color_rect = (255, 255, 255)
+        self.color_rect = (230, 230, 230)
         self.color_outline = (0, 0, 0)
 
         self.array = []
@@ -286,12 +315,6 @@ class DrawBoard:
                             (x, y, width, height))
             pygame.draw.rect(self.screen, self.color_outline,
                             (x, y, width, height), 1)
-
-    def draw_active(self, x, y, width, height):
-        pygame.draw.rect(self.screen, COLOR_ACTIVE_BUTTON,
-                        (x, y, width, height))
-        pygame.draw.rect(self.screen, self.color_outline,
-                        (x, y, width, height), 1)
 
     def get_array(self):
         return self.array
