@@ -1,7 +1,9 @@
+from re import S
 import pygame
 from artificial_intelligence import GameBot
 from backend import (PlayersColony, PeacefulColony, EnemyColony, ActionWithTable,
                      get_right_and_left_pos)
+import time
 
 COLOR_ACTIVE_BUTTON = (231, 238, 255)
 
@@ -19,12 +21,17 @@ class MainWindow:
                        'download game': self.render_menu_download_game,
                        'settings': self.render_settings_menu}
 
+        self.game_lvl = '1 lvl'
+        self.game_lvls = {'1lvl': r'GameLevels\Board1.txt',
+                          '2lvl': r'GameLevels\Board2.txt',
+                          '3lvl': r'GameLevels\Board3.txt'}
+
         self.InitUI()
 
     def InitUI(self):
         pygame.init()
         pygame.display.set_caption('Колонизация')
-        self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode(self.size, pygame.FULLSCREEN)
 
         self.starter_image = pygame.image.load("images/start_image.png").convert()
         cursor_image = pygame.image.load("images/cursor.png")
@@ -106,28 +113,31 @@ class MainWindow:
         if self.check_pos_on_button(mouse_position, self.positions_new_game,
                                     self.size_new_game):
             self.new_game.draw_active_button()
-            if is_clicked_mouse[0] is True:
+            if is_clicked_mouse[0]:
                 pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
                 self.check_state = 'new game'
+                pygame.time.delay(100)
 
         if self.check_pos_on_button(mouse_position, self.positions_download_game,
                                     self.size_download_game):
             self.download_game.draw_active_button()
-            if is_clicked_mouse[0] is True:
+            if is_clicked_mouse[0]:
                 pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
                 self.check_state = 'download game'
+                pygame.time.delay(100)
 
         if self.check_pos_on_button(mouse_position, self.positions_settings,
                                     self.size_settings):
             self.settings_button.draw_active_button()
-            if is_clicked_mouse[0] is True:
+            if is_clicked_mouse[0]:
                 pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
                 self.check_state = 'settings'
+                pygame.time.delay(100)
 
         if self.check_pos_on_button(mouse_position, self.positions_exit,
                                     self.size_exit):
             self.exit_button.draw_active_button()
-            if is_clicked_mouse[0] is True:
+            if is_clicked_mouse[0]:
                 pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
                 pygame.time.delay(275)
                 self.running = False
@@ -135,14 +145,34 @@ class MainWindow:
     def render_menu_download_game(self):
         self.screen.blit(self.starter_image, self.starter_position)
 
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                self.check_state = 'starter menu'
+
+    def render_game_lvl(self):
+        self.screen.blit(self.starter_image, self.starter_position)
+
+        mouse_position = pygame.mouse.get_pos()
+        is_clicked_mouse = pygame.mouse.get_pressed()
+
         board = DrawBoard(r'GameLevels\Board1.txt', self.screen)
         board.draw()
+        fields = board.get_array()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.check_state = 'starter menu'
+
+        for field in fields:
+            if self.check_pos_on_button(mouse_position, field[0:2], field[2::]):
+                board.draw_active(*field)
+                if is_clicked_mouse[0]:
+                    pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
+                    pygame.time.delay(100)
 
     def render_settings_menu(self):
         self.screen.blit(self.starter_image, self.starter_position)
@@ -235,22 +265,38 @@ class DrawBoard:
         self.nums_from_matrix = ActionWithTable(self.filename).get_nums_from_matrix()
         self.matrix = ActionWithTable(self.filename).get_matrix()
 
-        self.color_rect = (0, 0, 0)
+        self.color_rect = (255, 255, 255)
+        self.color_outline = (0, 0, 0)
+
+        self.array = []
 
     def draw(self):
         for i in self.nums_from_matrix:
             pos = get_right_and_left_pos(self.matrix, i)
 
-            x = 50 + pos[0][0] * 50
-            y = 50 + pos[0][1] * 50
+            x = 785 + pos[0][0] * 50
+            y = 90 + pos[0][1] * 75
 
-            width = (pos[1][0] - pos[0][0]) * 50
-            height = (pos[1][1] - pos[0][1]) * 50
+            width = (pos[1][0] - pos[0][0] + 1) * 50
+            height = (pos[1][1] - pos[0][1] + 1) * 75
+
+            self.array.append([x, y, width, height])
 
             pygame.draw.rect(self.screen, self.color_rect,
                             (x, y, width, height))
+            pygame.draw.rect(self.screen, self.color_outline,
+                            (x, y, width, height), 1)
+
+    def draw_active(self, x, y, width, height):
+        pygame.draw.rect(self.screen, COLOR_ACTIVE_BUTTON,
+                        (x, y, width, height))
+        pygame.draw.rect(self.screen, self.color_outline,
+                        (x, y, width, height), 1)
+
+    def get_array(self):
+        return self.array
 
 
 if __name__ == '__main__':
-    size = width, height = 1920, 1080
-    mw = MainWindow(size)
+    SIZE = width, height = 1920, 1080
+    mw = MainWindow(SIZE)
