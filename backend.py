@@ -6,8 +6,14 @@ class PeacefulColony:
         self.time = time
         self.number_of_lives = number_of_lives
 
-    def __iadd__(self, other):
-        pass
+    def __iadd__(self, delta):
+        self.number_of_lives += delta
+
+    def remove_lives(self, delta):
+        if self.number_of_lives - delta <= 0:
+            return False
+        else:
+            return True
 
 
 class PlayersColony(PeacefulColony):
@@ -15,11 +21,15 @@ class PlayersColony(PeacefulColony):
         self.time = time
         self.number_of_lives = number_of_lives
 
-    def __iadd__(self, other):
-        pass
+    def __iadd__(self, delta):
+        if self.number_of_lives + delta <= 10:
+            self.number_of_lives += delta
 
-    def __isub__(self, other):
-        pass
+    def remove_lives(self, delta):
+        if self.number_of_lives - delta <= 0:
+            return False
+        else:
+            return True
 
 
 class EnemyColony(PeacefulColony):
@@ -27,11 +37,14 @@ class EnemyColony(PeacefulColony):
         self.time = time
         self.number_of_lives = number_of_lives
 
-    def __iadd__(self, other):
-        pass
+    def __iadd__(self, delta):
+        self.number_of_lives += delta
 
-    def __isub__(self, other):
-        pass
+    def remove_lives(self, delta):
+        if self.number_of_lives - delta <= 0:
+            return False
+        else:
+            return True
 
 
 class ActionWithTable:
