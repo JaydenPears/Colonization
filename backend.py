@@ -16,7 +16,7 @@ class PeacefulColony:
             return True
 
 
-class PlayersColony(PeacefulColony):
+class PlayersColony:
     def __init__(self, time, number_of_lives):
         self.time = time
         self.number_of_lives = number_of_lives
@@ -32,7 +32,7 @@ class PlayersColony(PeacefulColony):
             return True
 
 
-class EnemyColony(PeacefulColony):
+class EnemyColony:
     def __init__(self, time, number_of_lives):
         self.time = time
         self.number_of_lives = number_of_lives
@@ -84,6 +84,8 @@ class ActionWithTable:
         array = sorted(list(set(array)))
         return array
 
+
+# функция для нахождений позиций края в матрице прямоугольника
 def get_right_and_left_pos(matrix, number):
     first_pos = second_pos = None
     flag = False
