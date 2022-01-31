@@ -2,17 +2,35 @@ import csv
 
 
 class PeacefulColony:
-    def __init__(self):
+    def __init__(self, time, number_of_lives):
+        self.time = time
+        self.number_of_lives = number_of_lives
+
+    def __iadd__(self, other):
         pass
 
 
 class PlayersColony(PeacefulColony):
-    def __init__(self):
+    def __init__(self, time, number_of_lives):
+        self.time = time
+        self.number_of_lives = number_of_lives
+
+    def __iadd__(self, other):
+        pass
+
+    def __isub__(self, other):
         pass
 
 
 class EnemyColony(PeacefulColony):
-    def __init__(self):
+    def __init__(self, time, number_of_lives):
+        self.time = time
+        self.number_of_lives = number_of_lives
+
+    def __iadd__(self, other):
+        pass
+
+    def __isub__(self, other):
         pass
 
 

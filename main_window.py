@@ -6,6 +6,8 @@ from backend import (PlayersColony, PeacefulColony, EnemyColony, ActionWithTable
 import time
 
 COLOR_ACTIVE_BUTTON = (231, 238, 255)
+PLAYERS_COLOR = (173, 214, 255)
+ENEMY_COLOR = (255, 102, 102)
 
 
 class MainWindow:
@@ -20,12 +22,15 @@ class MainWindow:
                        'new game': self.render_rules,
                        'download game': self.render_menu_download_game,
                        'settings': self.render_settings_menu,
-                       'game lvl': self.render_game_lvl}
+                       'game lvl': self.render_game_lvl,
+                       'init colonies': self.init_colonies}
 
-        self.game_lvl = '1 lvl'
+        self.game_lvl = '1lvl'
         self.game_lvls = {'1lvl': r'GameLevels\Board1.txt',
                           '2lvl': r'GameLevels\Board2.txt',
                           '3lvl': r'GameLevels\Board3.txt'}
+
+        self.sound_mouse = True
 
         self.InitUI()
 
@@ -44,7 +49,7 @@ class MainWindow:
         self.saves = ActionWithTable('saves.csv').get_dict()
 
         clock = pygame.time.Clock()
-        global_time = 0
+        self.global_time = 0
 
         self.check_state = 'starter menu'  # по умолчанию изначально вызываем старт. меню
 
@@ -57,7 +62,7 @@ class MainWindow:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
-            global_time += clock.tick()
+            self.global_time += clock.tick()
             pygame.display.flip()
         pygame.quit()
 
@@ -108,6 +113,22 @@ class MainWindow:
                                         (179, 179, 179), self.color_for_text, self.font,
                                         'Начать игру', self.screen)
 
+        self.size_off_sound = (300, 50)
+        self.positions_off_sound = (self.size[0] // 2 - (self.size_off_sound[0] // 2),
+                                    self.size[1] // 2 - (self.size_off_sound[1] // 2) - 200)
+        self.off_sound = Button(self.positions_off_sound, (840, 330),
+                                self.size_off_sound,
+                                (179, 179, 179), self.color_for_text, self.font,
+                                'Выключить/Включить звуки', self.screen)
+
+        self.settings_back_size = (300, 50)
+        self.positions_settings_back = (self.size[0] // 2 - (self.settings_back_size[0] // 2),
+                                        self.size[1] // 2 - (self.settings_back_size[1] // 2))
+        self.settings_back = Button(self.positions_settings_back, (750, 530),
+                                    self.settings_back_size,
+                                    (179, 179, 179), self.color_for_text, self.font,
+                                    'Назад', self.screen)
+
     def render_starter_menu(self):
         self.screen.blit(self.starter_image, self.starter_position)
 
@@ -123,15 +144,17 @@ class MainWindow:
                                     self.size_new_game):
             self.new_game.draw_active_button()
             if is_clicked_mouse[0]:
-                pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
-                self.check_state = 'new game'
+                if self.sound_mouse:
+                    pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
+                self.check_state = 'init colonies'
                 pygame.time.delay(100)
 
         if self.check_pos_on_button(mouse_position, self.positions_download_game,
                                     self.size_download_game):
             self.download_game.draw_active_button()
             if is_clicked_mouse[0]:
-                pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
+                if self.sound_mouse:
+                    pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
                 self.check_state = 'download game'
                 pygame.time.delay(100)
 
@@ -139,7 +162,8 @@ class MainWindow:
                                     self.size_settings):
             self.settings_button.draw_active_button()
             if is_clicked_mouse[0]:
-                pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
+                if self.sound_mouse:
+                    pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
                 self.check_state = 'settings'
                 pygame.time.delay(100)
 
@@ -147,9 +171,14 @@ class MainWindow:
                                     self.size_exit):
             self.exit_button.draw_active_button()
             if is_clicked_mouse[0]:
-                pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
+                if self.sound_mouse:
+                    pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
                 pygame.time.delay(275)
                 self.running = False
+
+    def init_colonies(self):
+        self.board = DrawBoard(self.game_lvls[self.game_lvl], self.screen)
+        self.fields = self.board.get_array()
 
     def render_menu_download_game(self):
         self.screen.blit(self.starter_image, self.starter_position)
@@ -162,6 +191,22 @@ class MainWindow:
 
     def render_settings_menu(self):
         self.screen.blit(self.starter_image, self.starter_position)
+
+        self.off_sound.draw_button()
+
+        mouse_position = pygame.mouse.get_pos()
+        is_clicked_mouse = pygame.mouse.get_pressed()
+
+        if self.check_pos_on_button(mouse_position, self.positions_off_sound,
+                                    self.size_off_sound):
+            self.off_sound.draw_active_button()
+            if is_clicked_mouse[0]:
+                if self.sound_mouse:
+                    self.sound_mouse = False
+                    pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
+                else:
+                    self.sound_mouse = True
+                pygame.time.delay(125)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -191,7 +236,8 @@ class MainWindow:
                                     self.size_start_game):
             self.start_game_button.draw_active_button()
             if is_clicked_mouse[0]:
-                pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
+                if self.sound_mouse:
+                    pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
                 self.check_state = 'game lvl'
                 pygame.time.delay(100)
 
@@ -234,9 +280,10 @@ class MainWindow:
         mouse_position = pygame.mouse.get_pos()
         is_clicked_mouse = pygame.mouse.get_pressed()
 
-        board = DrawBoard(self.game_lvls[self.game_lvl], self.screen)
-        board.draw()
-        fields = board.get_array()
+        self.board.draw()
+
+        enemy_colonies = [0]
+        players_colonies = [len(self.fields) - 1]
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -244,14 +291,19 @@ class MainWindow:
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.check_state = 'starter menu'
 
-        for field in fields:
+        for field in self.fields:
+            if self.fields.index(field) in players_colonies:
+                self.board.draw_player(field)
+            if self.fields.index(field) in enemy_colonies:
+                self.board.draw_enemy(field)
             if self.check_pos_on_button(mouse_position, field[0:2], field[2::]):
                 if is_clicked_mouse[0]:
-                    pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
-                    pygame.time.delay(100)
+                    if self.sound_mouse:
+                        pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
+                    pygame.time.delay(125)
 
     def render_endgame(self):
-        # Реализовать бег спрайтов в титрах с учётом коллайда и анимаций
+        # Реализовать бег спрайтов в титрах с учётом коллайда и анимаций в дальнейшем
         pass
 
 
@@ -318,6 +370,24 @@ class DrawBoard:
 
     def get_array(self):
         return self.array
+
+
+    def draw_enemy(self, field):
+        pygame.draw.rect(self.screen, ENEMY_COLOR,
+                         (field[0], field[1], field[2], field[3]))
+        pygame.draw.rect(self.screen, self.color_outline,
+                         (field[0], field[1], field[2], field[3]), 1)
+
+    def draw_player(self, field):
+        pygame.draw.rect(self.screen, PLAYERS_COLOR,
+                         (field[0], field[1], field[2], field[3]))
+        pygame.draw.rect(self.screen, self.color_outline,
+                         (field[0], field[1], field[2], field[3]), 1)
+
+
+def print_text_on_rect(screen, pos_for_text, size, font, text, color_for_text):
+        screen.blit(pygame.font.SysFont(font, size, bold=True).render(text, True,
+                                        color_for_text), pos_for_text)
 
 
 if __name__ == '__main__':
