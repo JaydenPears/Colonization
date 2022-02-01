@@ -373,7 +373,6 @@ class DrawBoard:
     def get_array(self):
         return self.array
 
-
     def draw_enemy(self, field):
         pygame.draw.rect(self.screen, ENEMY_COLOR,
                          (field[0], field[1], field[2], field[3]))
