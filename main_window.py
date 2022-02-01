@@ -146,7 +146,7 @@ class MainWindow:
             if is_clicked_mouse[0]:
                 if self.sound_mouse:
                     pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
-                self.check_state = 'init colonies'
+                self.check_state = 'new game'
                 pygame.time.delay(100)
 
         if self.check_pos_on_button(mouse_position, self.positions_download_game,
@@ -276,6 +276,8 @@ class MainWindow:
 
     def render_game_lvl(self):
         self.screen.blit(self.starter_image, self.starter_position)
+        self.board = DrawBoard(self.game_lvls[self.game_lvl], self.screen)
+        self.fields = self.board.get_array()
 
         mouse_position = pygame.mouse.get_pos()
         is_clicked_mouse = pygame.mouse.get_pressed()
