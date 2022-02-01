@@ -1,3 +1,4 @@
+from re import S
 import pygame
 from artificial_intelligence import GameBot
 from backend import (PlayersColony, PeacefulColony, EnemyColony, ActionWithTable,
@@ -128,11 +129,6 @@ class MainWindow:
                                     (179, 179, 179), self.color_for_text, self.font,
                                     'Назад', self.screen)
 
-    def init_colonies(self):
-        self.board = DrawBoard(self.game_lvls[self.game_lvl], self.screen)
-        self.fields = self.board.get_array()
-        self.check_state = 'game lvl'
-
     def render_starter_menu(self):
         self.screen.blit(self.starter_image, self.starter_position)
 
@@ -150,7 +146,7 @@ class MainWindow:
             if is_clicked_mouse[0]:
                 if self.sound_mouse:
                     pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
-                self.check_state = 'init colonies'
+                self.check_state = 'new game'
                 pygame.time.delay(100)
 
         if self.check_pos_on_button(mouse_position, self.positions_download_game,
@@ -179,6 +175,10 @@ class MainWindow:
                     pygame.mixer.Sound.play(pygame.mixer.Sound(r'sounds\click_on_button.mp3'))
                 pygame.time.delay(275)
                 self.running = False
+
+    def init_colonies(self):
+        self.board = DrawBoard(self.game_lvls[self.game_lvl], self.screen)
+        self.fields = self.board.get_array()
 
     def render_menu_download_game(self):
         self.screen.blit(self.starter_image, self.starter_position)
@@ -276,6 +276,8 @@ class MainWindow:
 
     def render_game_lvl(self):
         self.screen.blit(self.starter_image, self.starter_position)
+        self.board = DrawBoard(self.game_lvls[self.game_lvl], self.screen)
+        self.fields = self.board.get_array()
 
         mouse_position = pygame.mouse.get_pos()
         is_clicked_mouse = pygame.mouse.get_pressed()
@@ -384,7 +386,6 @@ class DrawBoard:
                          (field[0], field[1], field[2], field[3]), 1)
 
 
-# Для печати кол-ва населения
 def print_text_on_rect(screen, pos_for_text, size, font, text, color_for_text):
         screen.blit(pygame.font.SysFont(font, size, bold=True).render(text, True,
                                         color_for_text), pos_for_text)
