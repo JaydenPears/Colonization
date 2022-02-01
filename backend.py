@@ -6,32 +6,45 @@ class PeacefulColony:
         self.time = time
         self.number_of_lives = number_of_lives
 
-    def __iadd__(self, other):
-        pass
+    def __iadd__(self, delta):
+        self.number_of_lives += delta
+
+    def remove_lives(self, delta):
+        if self.number_of_lives - delta <= 0:
+            return False
+        else:
+            return True
 
 
-class PlayersColony(PeacefulColony):
+class PlayersColony:
     def __init__(self, time, number_of_lives):
         self.time = time
         self.number_of_lives = number_of_lives
 
-    def __iadd__(self, other):
-        pass
+    def __iadd__(self, delta):
+        if self.number_of_lives + delta <= 10:
+            self.number_of_lives += delta
 
-    def __isub__(self, other):
-        pass
+    def remove_lives(self, delta):
+        if self.number_of_lives - delta <= 0:
+            return False
+        else:
+            return True
 
 
-class EnemyColony(PeacefulColony):
+class EnemyColony:
     def __init__(self, time, number_of_lives):
         self.time = time
         self.number_of_lives = number_of_lives
 
-    def __iadd__(self, other):
-        pass
+    def __iadd__(self, delta):
+        self.number_of_lives += delta
 
-    def __isub__(self, other):
-        pass
+    def remove_lives(self, delta):
+        if self.number_of_lives - delta <= 0:
+            return False
+        else:
+            return True
 
 
 class ActionWithTable:
@@ -71,6 +84,8 @@ class ActionWithTable:
         array = sorted(list(set(array)))
         return array
 
+
+# функция для нахождений позиций края в матрице прямоугольника
 def get_right_and_left_pos(matrix, number):
     first_pos = second_pos = None
     flag = False
